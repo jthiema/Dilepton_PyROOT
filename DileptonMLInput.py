@@ -227,7 +227,7 @@ for i in range(10000):
                 hGenAntiBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()))
         hGenLeptonpt.Fill(v_leptons[1].Pt(),GenLepton.Pt())
         hGenAntiLeptonpt.Fill(v_leptons[1].Pt(),GenAntiLepton.Pt())
-        hGenLeptoneta.Fill(v_leptons[1].Phi(),GenLepton.Phi())
+        hGenLeptoneta.Fill(v_leptons[1].Eta(),GenLepton.Eta())
 
         
 
