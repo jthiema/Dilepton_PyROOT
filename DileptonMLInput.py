@@ -126,7 +126,10 @@ hGenLeptonpt = ROOT.TH2F("hGenLeptonpt","Generated vs Reconstructed_lepton_pt", 
 
 hGenAntiLeptonpt = ROOT.TH2F("hGenAntiLeptonpt","Generated vs Reconstructed_GenLepton_pt", 500, 0, 200, 500, 0, 200)
 
-hGenLeptoneta = ROOT.TH2F("hGenLeptoneta","Generated vs Reconstructed_lepton_eta", 500, 0, 200, 500, 0, 200)
+hGenLeptoneta = ROOT.TH2F("hGenLeptoneta","Generated vs Reconstructed_lepton_eta", 500, -5, -5, 500, -5, -5)
+
+hGenLeptonphi = ROOT.TH2F("hGenLeptonphi","Generated vs Reconstructed_lepton_phi", 500, -5, -5, 500, -5, -5)
+
 
 
 #for i in range(nEvents):
@@ -226,8 +229,10 @@ for i in range(10000):
             else:
                 hGenAntiBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()))
         hGenLeptonpt.Fill(v_leptons[1].Pt(),GenLepton.Pt())
-        hGenAntiLeptonpt.Fill(v_leptons[1].Pt(),GenAntiLepton.Pt())
+        #hGenAntiLeptonpt.Fill(v_leptons[1].Pt(),GenAntiLepton.Pt())
         hGenLeptoneta.Fill(v_leptons[1].Eta(),GenLepton.Eta())
+        hGenLeptonphi.Fill(v_leptons[1].Phi(),GenLepton.Phi())
+       
 
         
 
@@ -242,9 +247,11 @@ outHistFile.cd()
 #c.SaveAs("hGenBdeltaR.png")
 #hGenBdeltaR.Write()
 #hGenBdeltaR_gencut.Write()
-hGenAntiLeptonpt.Write()
+#hGenAntiLeptonpt.Write()
 hGenLeptonpt.Write()
 hGenLeptoneta.Write()
+hGenLeptonphi.Write()
+
 
 #hGenAntiBdeltaR.Draw()
 #c.SaveAs("hGenAntiBdeltaR.png")    
