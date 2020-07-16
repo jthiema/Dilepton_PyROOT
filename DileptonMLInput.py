@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import ROOT
 import math
 import numpy
@@ -31,6 +30,13 @@ nEvents = tree.GetEntries()
 # The Lepton PDG ID identifies whether the particle is a electron, positron, muon, or anit-muon
 v_lepPdgId = ROOT.std.vector('int')()
 tree.SetBranchAddress("lepPdgId",v_lepPdgId)
+
+# ID for GenLepton and AntiGenLepton  EKP
+#v_GenLeptonPdgId = ROOT.std.vector('int')()
+#tree.SetBranchAddress("GenLeptonPdgId",v_GenLeptonPdgId)
+
+#v_GenAntiLeptonPdgId = ROOT.std.vector('int')()
+#tree.SetBranchAddress("GenAntiLeptonPdgId",v_GenAntiLeptonPdgId)
 
 # Vector of four-vectors for the leptons (electrons and muons)
 v_leptons = ROOT.std.vector('ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float>>')()
@@ -95,8 +101,14 @@ GenWMinus = ROOT.Math.LorentzVector('ROOT::Math::PtEtaPhiM4D<float>')()
 tree.SetBranchAddress("GenWMinus",GenWMinus)
 
 # Vector of four-vector for generated lepton (GenLepton)
+GenLepton = ROOT.Math.LorentzVector('ROOT::Math::PtEtaPhiM4D<float>')()
+tree.SetBranchAddress("GenLepton",GenLepton)
+
 
 # Vector of four-vector for generated anti-lepton (GenAntiLepton)
+GenAntiLepton = ROOT.Math.LorentzVector('ROOT::Math::PtEtaPhiM4D<float>')()
+tree.SetBranchAddress("GenAntiLepton",GenAntiLepton)
+
 
 
 DimuonMLInputList = []
@@ -110,7 +122,11 @@ hGenBdeltaR_gencut = ROOT.TH1F("GenBdeltaR_gencut", "Delta R between GenB and re
 hGenAntiBdeltaR_gencut = ROOT.TH1F("GenAntiBdeltaR_gencut", "Delta R between GenAntiB and reco jets", 500, 0, 5)
 
 # Decalaration and Booking of TH2 Histograms
+hGenLeptonpt = ROOT.TH2F("hGenLeptonpt","Generated vs Reconstructed_lepton_pt", 500, 0, 200, 500, 0, 200)
 
+hGenAntiLeptonpt = ROOT.TH2F("hGenAntiLeptonpt","Generated vs Reconstructed_GenLepton_pt", 500, 0, 200, 500, 0, 200)
+
+hGenLeptoneta = ROOT.TH2F("hGenLeptoneta","Generated vs Reconstructed_lepton_eta", 500, 0, 200, 500, 0, 200)
 
 
 #for i in range(nEvents):
@@ -176,6 +192,7 @@ for i in range(10000):
         if v_jets[j].Pt() < 30 or v_jets[j].Eta() > 2.4 : continue 
         if v_jetPFID[j] != 3 : continue 
         # Only consider jets that are isolated from leptons
+        hGenLeptonpt.Fill(v_jets[j].Phi(), v_jets[j].Eta())
         if deltaR(v_jets[j].Phi(),v_jets[j].Eta(),v_leptons[0].Phi(),v_leptons[0].Eta()) < 0.4 : continue 
         if deltaR(v_jets[j].Phi(),v_jets[j].Eta(),v_leptons[1].Phi(),v_leptons[1].Eta()) < 0.4 : continue 
         selectedjets.append(v_jets[j])
@@ -208,8 +225,11 @@ for i in range(10000):
                 hGenBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()))
             else:
                 hGenAntiBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()))
+        hGenLeptonpt.Fill(v_leptons[1].Pt(),GenLepton.Pt())
+        hGenAntiLeptonpt.Fill(v_leptons[1].Pt(),GenAntiLepton.Pt())
+        hGenLeptoneta.Fill(v_leptons[1].Phi(),GenLepton.Phi())
 
-
+        
 
 outHistFile = ROOT.TFile.Open("output.root" ,"RECREATE")
 outHistFile.cd()
@@ -220,13 +240,16 @@ outHistFile.cd()
 
 #hGenBdeltaR.Draw()
 #c.SaveAs("hGenBdeltaR.png")
-hGenBdeltaR.Write()
-hGenBdeltaR_gencut.Write()
-    
+#hGenBdeltaR.Write()
+#hGenBdeltaR_gencut.Write()
+hGenAntiLeptonpt.Write()
+hGenLeptonpt.Write()
+hGenLeptoneta.Write()
+
 #hGenAntiBdeltaR.Draw()
 #c.SaveAs("hGenAntiBdeltaR.png")    
-hGenAntiBdeltaR.Write()
-hGenAntiBdeltaR_gencut.Write()
+
+#hGenAntiBdeltaR_gencut.Write()
 
     # Fill DimuonMLInput
 
@@ -234,3 +257,6 @@ hGenAntiBdeltaR_gencut.Write()
 
 #    DimuonMLInputList.append(DimuonMLInput[])
 #    DimuonMLTruthOutputList.append(DimuonMLTruthOutput[])
+
+
+
