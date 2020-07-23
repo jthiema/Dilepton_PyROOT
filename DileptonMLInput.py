@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import ROOT
 import math
-import numpy
+import numpy as np
 
 def deltaPhi(phi1, phi2):
     dphi = phi1 - phi2
@@ -111,8 +111,8 @@ hGenAntiBdeltaR_gencut = ROOT.TH1F("GenAntiBdeltaR_gencut", "Delta R between Gen
 
 # Decalaration and Booking of TH2 Histograms
 
-
-
+input_data = np.empty((0,6,6)) #np input array stack initialization
+output_data = np.empty((0,6,6)) #np output array stack initialization
 #for i in range(nEvents):
 for i in range(10000):
 
@@ -184,35 +184,65 @@ for i in range(10000):
 
     # Only consider events with at least two selected jets
     if len(selectedjets) < 2 : continue 
+    energy_jet_list = [jet.E() for jet in selectedjets]
+    best_jets=[] #select the four most energetic jets
+    print("lengths: ", len(selectedjets),", ",len(selectedjetsbtagscore))
+    for _ in range(4):
+        max_idx = energy_jet_list.index(max(energy_jet_list))
+        #print("max_idx: ", max_idx)
+        best_jets.append([selectedjets[max_idx], selectedjetsbtagscore[max_idx]])
+        energy_jet_list.pop(max_idx)
+        selectedjets.pop(max_idx)
+        selectedjetsbtagscore.pop(max_idx) #pop the max elements to get the next max element
+        if len(energy_jet_list) == 0: break #if there are less than 4 selected jets, stop
+    input = np.zeros((1,6,6)) 
+    met_pt = met.Pt()
+    met_phi = met.Phi()
+    for idx in range(2):
+        input[0,:,idx] = np.array([v_leptons[idx].Pt(), v_leptons[idx].Phi(), v_leptons[idx].Eta(), 0, met_pt, met_phi])
+    for idx in range(len(best_jets)):
+        input[0,:,idx+2] = np.array([best_jets[0][idx].Pt(), best_jets[0][idx].Phi(), best_jets[0][idx].Eta(), best_jets[0][idx].E(), best_jets[0][idx].M()$
+    input_data = np.vstack((input_data, input))
+    output = np.zeros((1,6,3))
+    output[0,0,:] = np.array([GenB.Pt(), GenB.Phi(), GenB.Eta()])
+    output[0,1,:] = np.array([GenAntiB.Pt(), GenAntiB.Phi(), GenAntiB.Eta()])
+    output[0,2,:] = np.array([GenWPlus.Pt(), GenWPlus.Phi(), GenWPlus.Eta()])
+    output[0,3,:] = np.array([GenWMinus.Pt(), GenWMinus.Phi(), GenWMinus.Eta()])
+    output[0,4,:] = np.array([GenTop.Pt(), GenTop.Phi(), GenTop.Eta()])
+    output[0,5,:] = np.array([GenAntiTop.Pt(), GenAntiTop.Phi(), GenAntiTop.Eta()])
+    output_data = np.vstack((output_data, output))
+np.savetxt("X.csv", input_data, delimiter=",")
+np.savetxt("Y.csv", outut_data, delimiter=",")
 
-    selectedbtaggedjets = []
 
-    for j in range(len(selectedjets)):
-        # Only consider jet with BTag score > 0.5
-        if selectedjetsbtagscore[j] < 0.5 : continue
-        selectedbtaggedjets.append(selectedjets[j])
+#     selectedbtaggedjets = []
+
+#     for j in range(len(selectedjets)):
+#         # Only consider jet with BTag score > 0.5
+#         if selectedjetsbtagscore[j] < 0.5 : continue
+#         selectedbtaggedjets.append(selectedjets[j])
         
-    # Only consider events with two BTagged jets
-    if len(selectedbtaggedjets) != 2 : continue 
+#     # Only consider events with two BTagged jets
+#     if len(selectedbtaggedjets) != 2 : continue 
 
 
-    # Filling of the Histograms
-    for j in range(len(selectedbtaggedjets)):
-        if deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()) < deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()) :
-            hGenBdeltaR.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()))
-        else:
-            hGenAntiBdeltaR.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()))
+#     # Filling of the Histograms
+#     for j in range(len(selectedbtaggedjets)):
+#         if deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()) < deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()) :
+#             hGenBdeltaR.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()))
+#         else:
+#             hGenAntiBdeltaR.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()))
 
-        if abs(GenB.Eta()) < 2.7 and abs(GenAntiB.Eta()) < 2.7 : 
-            if deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()) < deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()) :
-                hGenBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()))
-            else:
-                hGenAntiBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()))
+#         if abs(GenB.Eta()) < 2.7 and abs(GenAntiB.Eta()) < 2.7 : 
+#             if deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()) < deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()) :
+#                 hGenBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenB.Phi(),GenB.Eta()))
+#             else:
+#                 hGenAntiBdeltaR_gencut.Fill(deltaR(selectedbtaggedjets[j].Phi(),selectedbtaggedjets[j].Eta(),GenAntiB.Phi(),GenAntiB.Eta()))
 
 
 
-outHistFile = ROOT.TFile.Open("output.root" ,"RECREATE")
-outHistFile.cd()
+# outHistFile = ROOT.TFile.Open("output.root" ,"RECREATE")
+# outHistFile.cd()
 
 #c = ROOT.TCanvas("c","c",600,400)
 
@@ -220,13 +250,13 @@ outHistFile.cd()
 
 #hGenBdeltaR.Draw()
 #c.SaveAs("hGenBdeltaR.png")
-hGenBdeltaR.Write()
-hGenBdeltaR_gencut.Write()
+# hGenBdeltaR.Write()
+# hGenBdeltaR_gencut.Write()
     
 #hGenAntiBdeltaR.Draw()
 #c.SaveAs("hGenAntiBdeltaR.png")    
-hGenAntiBdeltaR.Write()
-hGenAntiBdeltaR_gencut.Write()
+# hGenAntiBdeltaR.Write()
+# hGenAntiBdeltaR_gencut.Write()
 
     # Fill DimuonMLInput
 
