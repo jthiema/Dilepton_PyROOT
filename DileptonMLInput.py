@@ -112,9 +112,9 @@ hGenAntiBdeltaR_gencut = ROOT.TH1F("GenAntiBdeltaR_gencut", "Delta R between Gen
 # Decalaration and Booking of TH2 Histograms
 
 input_data = np.empty((0,6,6)) #np input array stack initialization
-output_data = np.empty((0,6,6)) #np output array stack initialization
-#for i in range(nEvents):
-for i in range(10000):
+output_data = np.empty((0,6,3)) #np output array stack initialization
+for i in range(nEvents):
+#for i in range(10000):
 
 #    print "Event "+str(i)
 
@@ -186,7 +186,7 @@ for i in range(10000):
     if len(selectedjets) < 2 : continue 
     energy_jet_list = [jet.E() for jet in selectedjets]
     best_jets=[] #select the four most energetic jets
-    print("lengths: ", len(selectedjets),", ",len(selectedjetsbtagscore))
+    # print("lengths: ", len(selectedjets),", ",len(selectedjetsbtagscore))
     for _ in range(4):
         max_idx = energy_jet_list.index(max(energy_jet_list))
         #print("max_idx: ", max_idx)
@@ -195,15 +195,15 @@ for i in range(10000):
         selectedjets.pop(max_idx)
         selectedjetsbtagscore.pop(max_idx) #pop the max elements to get the next max element
         if len(energy_jet_list) == 0: break #if there are less than 4 selected jets, stop
-    input = np.zeros((1,6,6)) 
+    input = np.zeros((1,6,6)) #initialization of input for filling
     met_pt = met.Pt()
     met_phi = met.Phi()
     for idx in range(2):
         input[0,:,idx] = np.array([v_leptons[idx].Pt(), v_leptons[idx].Phi(), v_leptons[idx].Eta(), 0, met_pt, met_phi])
     for idx in range(len(best_jets)):
-        input[0,:,idx+2] = np.array([best_jets[0][idx].Pt(), best_jets[0][idx].Phi(), best_jets[0][idx].Eta(), best_jets[0][idx].E(), best_jets[0][idx].M()$
+        input[0,:,idx+2] = np.array([best_jets[idx][0].Pt(), best_jets[idx][0].Phi(), best_jets[idx][0].Eta(), best_jets[idx][0].E(), best_jets[idx][0].M(), best_jets[idx][1] ])
     input_data = np.vstack((input_data, input))
-    output = np.zeros((1,6,3))
+    output = np.zeros((1,6,3)) # initialization of output for filling
     output[0,0,:] = np.array([GenB.Pt(), GenB.Phi(), GenB.Eta()])
     output[0,1,:] = np.array([GenAntiB.Pt(), GenAntiB.Phi(), GenAntiB.Eta()])
     output[0,2,:] = np.array([GenWPlus.Pt(), GenWPlus.Phi(), GenWPlus.Eta()])
@@ -211,8 +211,8 @@ for i in range(10000):
     output[0,4,:] = np.array([GenTop.Pt(), GenTop.Phi(), GenTop.Eta()])
     output[0,5,:] = np.array([GenAntiTop.Pt(), GenAntiTop.Phi(), GenAntiTop.Eta()])
     output_data = np.vstack((output_data, output))
-np.savetxt("X.csv", input_data, delimiter=",")
-np.savetxt("Y.csv", outut_data, delimiter=",")
+np.save("X.npy", input_data)
+np.save("Y.npy", output_data)
 
 
 #     selectedbtaggedjets = []
