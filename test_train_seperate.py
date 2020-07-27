@@ -14,3 +14,7 @@ X_test = X[int(data_size*ratio):]
 Y_train = Y[:int(data_size*ratio)]
 Y_test = Y[int(data_size*ratio):]
 
+np.save("X_train.npy", X_train)
+np.save("X_test.npy", X_test)
+np.save("Y_train.npy", Y_train)
+np.save("Y_test.npy", Y_test)
