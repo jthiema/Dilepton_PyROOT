@@ -15,10 +15,10 @@ NAME = "Vanilla"
 # NAME = "NodePerLayer-{},Bidirectional-{},LSTM-{},Dense-{},Time-{}".format(nodes_per_layer,bidirectional,LSTM_layer,dense_layer, int(time.time()))
 print(NAME)
 
-tensorboard = TensorBoard(log_dir = 'trash/{}'.format(NAME)) #'logs/{}''
+tensorboard = TensorBoard(log_dir = 'logs/{}'.format(NAME)) #'logs/{}''
 model = Sequential()
 model.add(TimeDistributed(Dense(440, activation='relu')))
-for i in range(3):
+for _ in range(3):
     model.add(BatchNormalization())
     model.add(Bidirectional(LSTM(88), return_sequences=True)))
 model.add(BatchNormalization())
@@ -30,6 +30,5 @@ model.add(TimeDistributed(Dense(30, activation='relu')))
 model.add(TimeDistributed(Dense(3, activation='linear'))) # output layer
 
 nu_guesser.compile(optimizer=tf.keras.optimizers.Adam(lr=1e-4), loss=tf.keras.losses.MeanSquaredError(), metrics = ["accuracy"])
-history = nu_guesser.fit(training_input, training_output, batch_size =997, epochs= 50, validation_data= (x_test,y_test), callbacks = [tensorboard])
-# tf.keras.backend.clear_session()
-# print("results shape: ", nu_guesser.predict(training_input).shape)
+history = nu_guesser.fit(X_train, Y_train, epochs= 25, validation_data= (X_test,Y_test), callbacks = [tensorboard])
+
