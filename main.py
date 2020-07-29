@@ -11,7 +11,7 @@ X_test = np.load("X_test.npy")
 Y_train = np.load("Y_train.npy")
 Y_test = np.load("Y_test.npy")
 
-NAME = "Vanilla"
+NAME = "Vanilla_unnormalized"
 # NAME = "NodePerLayer-{},Bidirectional-{},LSTM-{},Dense-{},Time-{}".format(nodes_per_layer,bidirectional,LSTM_layer,dense_layer, int(time.time()))
 print(NAME)
 

@@ -1,7 +1,7 @@
 import numpy as np 
 
-X = np.load("X.npy")
-Y = np.load("Y.npy")
+X = np.load("X_raw.npy")
+Y = np.load("Y_raw.npy")
 
 np.random.shuffle(X)
 np.random.shuffle(Y)
