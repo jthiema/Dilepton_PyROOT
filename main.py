@@ -29,6 +29,6 @@ model.add(BatchNormalization())
 model.add(TimeDistributed(Dense(30, activation='relu')))
 model.add(TimeDistributed(Dense(3, activation='linear'))) # output layer
 
-nu_guesser.compile(optimizer=tf.keras.optimizers.Adam(lr=1e-4), loss=tf.keras.losses.MeanSquaredError(), metrics = ["accuracy"])
-history = nu_guesser.fit(X_train, Y_train, epochs= 25, validation_data= (X_test,Y_test), callbacks = [tensorboard])
+model.compile(optimizer=tf.keras.optimizers.Adam(lr=1e-4), loss=tf.keras.losses.MeanSquaredError(), metrics = ["accuracy"])
+history = model.fit(X_train, Y_train, epochs= 25, validation_data= (X_test,Y_test), callbacks = [tensorboard])
 
