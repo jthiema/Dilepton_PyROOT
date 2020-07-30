@@ -20,7 +20,7 @@ model = Sequential()
 model.add(TimeDistributed(Dense(440, activation='relu')))
 for _ in range(3):
     model.add(BatchNormalization())
-    model.add(Bidirectional(LSTM(88), return_sequences=True))
+    model.add(Bidirectional(LSTM(88, return_sequences=True)))
 model.add(BatchNormalization())
 model.add(TimeDistributed(Dense(320, activation='relu')))
 model.add(BatchNormalization())
