@@ -159,12 +159,12 @@ for i in range(nEvents):
 
     # Subleading muon cuts
     if abs(v_lepPdgId[0]) == 13 :
-        if v_leptons[0].Pt() < 25 or v_leptons[0].Eta() > 2.4 : continue
+        if v_leptons[0].Pt() < 25 or abs(v_leptons[0].Eta()) > 2.4 : continue
         if v_lepID_MuonTight[0] != 1 or v_lepPfIso[0] > 0.15 : continue 
 
     # Subleading muon cuts
     if abs(v_lepPdgId[1]) == 13 :
-        if v_leptons[1].Pt() < 15 or v_leptons[1].Eta() > 2.4 : continue
+        if v_leptons[1].Pt() < 15 or abs(v_leptons[1].Eta()) > 2.4 : continue
         if v_lepID_MuonTight[1] != 1 or v_lepPfIso[1] > 0.15 : continue 
 
 
@@ -173,7 +173,7 @@ for i in range(nEvents):
 
     for j in range(len(v_jets)):
         # Jet cuts
-        if v_jets[j].Pt() < 30 or v_jets[j].Eta() > 2.4 : continue 
+        if v_jets[j].Pt() < 30 or abs(v_jets[j].Eta()) > 2.4 : continue 
         if v_jetPFID[j] != 3 : continue 
         # Only consider jets that are isolated from leptons
         if deltaR(v_jets[j].Phi(),v_jets[j].Eta(),v_leptons[0].Phi(),v_leptons[0].Eta()) < 0.4 : continue 
