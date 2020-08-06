@@ -211,8 +211,8 @@ for i in range(nEvents):
     output[0,4,:] = np.array([GenTop.Pt(), GenTop.Phi(), GenTop.Eta()])
     output[0,5,:] = np.array([GenAntiTop.Pt(), GenAntiTop.Phi(), GenAntiTop.Eta()])
     output_data = np.vstack((output_data, output))
-np.save("X.npy", input_data)
-np.save("Y.npy", output_data)
+np.save("X_raw.npy", input_data)
+np.save("Y_raw.npy", output_data)
 
 
 #     selectedbtaggedjets = []
