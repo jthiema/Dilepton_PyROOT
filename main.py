@@ -16,6 +16,9 @@ NAME = "Vanilla_unnormalized"
 print(NAME)
 
 tensorboard = TensorBoard(log_dir = 'logs/{}'.format(NAME)) #'logs/{}''
+checkpoint_path = "checkpoints/{}.ckpt".format(NAME)
+w_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, monitor='val_loss', verbose=1) # monitor vallidation loss to save if it's best it's seen
+
 model = Sequential()
 model.add(TimeDistributed(Dense(440, activation='relu')))
 for _ in range(3):
@@ -30,5 +33,5 @@ model.add(TimeDistributed(Dense(30, activation='relu')))
 model.add(TimeDistributed(Dense(3, activation='linear'))) # output layer
 
 model.compile(optimizer=tf.keras.optimizers.Adam(lr=1e-4), loss=tf.keras.losses.MeanSquaredError(), metrics = ["accuracy"])
-history = model.fit(X_train, Y_train, epochs= 25, validation_data= (X_test,Y_test), callbacks = [tensorboard])
+history = model.fit(X_train, Y_train, epochs= 15, validation_data= (X_test,Y_test), callbacks = [w_callback, tensorboard])
 
