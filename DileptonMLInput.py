@@ -149,12 +149,12 @@ for i in range(10000):
 
     # Leading electron/positron cuts
     if abs(v_lepPdgId[0]) == 11 :
-        if v_leptons[0].Pt() < 25 or (abs(v_lepSCEta[0]) > 1.4442 and abs(v_lepSCEta[0]) < 1.566) or v_leptons[0].Eta() > 2.4 : continue
+        if v_leptons[0].Pt() < 25 or (abs(v_lepSCEta[0]) > 1.4442 and abs(v_lepSCEta[0]) < 1.566) or abs(v_leptons[0].Eta()) > 2.4 : continue
         if v_lepID_ElecCutBased[0] != 4 : continue 
 
     # Subleading electron/positron cuts
     if abs(v_lepPdgId[1]) == 11 :
-        if v_leptons[1].Pt() < 20 or (abs(v_lepSCEta[1]) > 1.4442 and abs(v_lepSCEta[1]) < 1.566) or v_leptons[1].Eta() > 2.4 : continue
+        if v_leptons[1].Pt() < 20 or (abs(v_lepSCEta[1]) > 1.4442 and abs(v_lepSCEta[1]) < 1.566) or abs(v_leptons[1].Eta()) > 2.4 : continue
         if v_lepID_ElecCutBased[1] != 4 : continue 
 
     # Subleading muon cuts
