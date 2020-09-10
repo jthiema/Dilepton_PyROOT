@@ -6,12 +6,18 @@ import tensorflow as tf
 from tensorflow.keras.callbacks import TensorBoard
 
 
+#X_train = np.load("X_train_normalized.npy")
+#X_test = np.load("X_test_normalized.npy")
+#Y_train = np.load("Y_train_normalized.npy")
+#Y_test = np.load("Y_test_normalized.npy")
+
 X_train = np.load("X_train.npy")
 X_test = np.load("X_test.npy")
 Y_train = np.load("Y_train.npy")
 Y_test = np.load("Y_test.npy")
 
 NAME = "Vanilla_unnormalized"
+# NAME = "Vanilla_normalized"
 # NAME = "NodePerLayer-{},Bidirectional-{},LSTM-{},Dense-{},Time-{}".format(nodes_per_layer,bidirectional,LSTM_layer,dense_layer, int(time.time()))
 print(NAME)
 
