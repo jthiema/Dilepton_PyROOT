@@ -1,7 +1,7 @@
 import time
 import numpy as np
 from tensorflow.keras import Sequential
-from tensorflow.keras.layers import Dense, Dropout, LSTM, Bidirectional, BatchNormalization, TimeDistributed, LeakyReLU
+from tensorflow.keras.layers import Dense, Dropout, LSTM, Bidirectional, BatchNormalization, TimeDistributed, tf.nn.leaky_relu
 import tensorflow as tf
 from tensorflow.keras.callbacks import TensorBoard
 
@@ -26,16 +26,16 @@ checkpoint_path = "checkpoints/{}.ckpt".format(NAME)
 w_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, monitor='val_loss', verbose=1) # monitor vallidation loss to save if it's best it's seen
 
 model = Sequential()
-model.add(TimeDistributed(Dense(440, activation=LeakyReLU)))
+model.add(TimeDistributed(Dense(440, activation=tf.nn.leaky_relu)))
 for _ in range(3):
     model.add(BatchNormalization())
     model.add(Bidirectional(LSTM(88, return_sequences=True)))
 model.add(BatchNormalization())
-model.add(TimeDistributed(Dense(320, activation=LeakyReLU)))
+model.add(TimeDistributed(Dense(320, activation=tf.nn.leaky_relu)))
 model.add(BatchNormalization())
-model.add(TimeDistributed(Dense(90, activation=LeakyReLU)))
+model.add(TimeDistributed(Dense(90, activation=tf.nn.leaky_relu)))
 model.add(BatchNormalization())
-model.add(TimeDistributed(Dense(30, activation=LeakyReLU)))
+model.add(TimeDistributed(Dense(30, activation=tf.nn.leaky_relu)))
 model.add(TimeDistributed(Dense(3, activation='linear'))) # output layer
 
 model.compile(optimizer=tf.keras.optimizers.Adam(lr=1e-4), loss=tf.keras.losses.MeanSquaredError(), metrics = ["accuracy"])
