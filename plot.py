@@ -15,9 +15,10 @@ X_test = np.load("X_test_normalized.npy")
 Y_test = np.load("Y_test_normalized.npy")
 X_train = np.load("X_train_normalized.npy")
 Y_train = np.load("Y_train_normalized.npy")
-#NAME = "Vanilla_normalized_leaky"
-NAME = "Vanilla_normalized"
-checkpoint_path = "checkpoints/{}/cp.h5".format(NAME)
+NAME = "Vanilla_normalized_leaky"
+#NAME = "Vanilla_normalized"
+checkpoint_path = "checkpoints/{}/cp.ckpt".format(NAME)
+#checkpoint_path = "checkpoints/{}/cp.h5".format(NAME)
 print("Y test shape: ",Y_test.shape)
 model = Sequential()
 model.add(TimeDistributed(Dense(440, activation=tf.nn.leaky_relu)))
@@ -34,12 +35,12 @@ model.add(TimeDistributed(Dense(3, activation='linear'))) # output layer
 
 model.compile(optimizer=tf.keras.optimizers.Adam(lr=1e-4), loss=tf.keras.losses.MeanSquaredError(), metrics = ["accuracy"])
 
-#model.load_weights(checkpoint_path)
+model.load_weights(checkpoint_path)
 #model=keras.models.load_model(checkpoint_path, custom_objects={'leaky_relu': tf.nn.leaky_relu})
-model=keras.models.load_model(checkpoint_path)
+#model=keras.models.load_model(checkpoint_path)
 
 fig = plt.figure()
-Yhat = model.predict(X_test)
+Yhat = model(X_test)
 print("Yhat test shape: ", Yhat.shape)
 _, i_size, j_size =  Y_test.shape
 #bins = np.linspace(-1.5, 1.5, 150)
@@ -58,7 +59,7 @@ plt.close(fig)
 print("Yhat train shape: ", Yhat.shape)
 fig = plt.figure()
 #now plot the with the train values
-Yhat = model.predict(X_train[:167175,:,:])
+Yhat = model(X_train[:167175,:,:])
 
 for i in range(i_size):
     for j in range(j_size):

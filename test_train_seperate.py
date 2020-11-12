@@ -1,19 +1,32 @@
 import numpy as np 
 import pickle
+import sklearn
+from sklearn.model_selection import train_test_split
 
 X = np.load("X_raw.npy")
 Y = np.load("Y_raw.npy")
 
-np.random.shuffle(X)
-np.random.shuffle(Y)
+scaler = sklearn.preprocessing.StandardScaler()
+X_shape = X.shape
+Y_shape = Y.shape
+X = scaler.fit_transform(X.reshape(X_shape[0], np.prod(X_shape[1:])))
+Y = scaler.fit_transform(Y.reshape(Y_shape[0], np.prod(Y_shape[1:])))
+X = X.reshape(X_shape)
+Y = Y.reshape(Y_shape)
+#np.random.shuffle(X)
+#np.random.shuffle(Y)
+
 
 data_size = X.shape[0] # length of the data
-ratio = 0.8 # fraction of the data that will work as training data
+#ratio = 0.2 # fraction of the data that will work as training data
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state=765 )
 
+'''
 X_train = X[:int(data_size*ratio)]
 X_test = X[int(data_size*ratio):]
 Y_train = Y[:int(data_size*ratio)]
 Y_test = Y[int(data_size*ratio):]
+
 
 np.save("X_train.npy", X_train)
 np.save("X_test.npy", X_test)
@@ -48,13 +61,15 @@ X_train = X[:int(data_size*ratio)]
 X_test = X[int(data_size*ratio):]
 Y_train = Y[:int(data_size*ratio)]
 Y_test = Y[int(data_size*ratio):]
-
+'''
 np.save("X_train_normalized.npy", X_train)
 np.save("X_test_normalized.npy", X_test)
 np.save("Y_train_normalized.npy", Y_train)
 np.save("Y_test_normalized.npy", Y_test)
 
+'''
 max_values = {"X_pt_max": X_pt_max, "X_E_max": X_E_max, "X_MET_pt_max": X_MET_pt_max, "X_M_max": X_M_max, "Y_pt_max": Y_pt_max}
 file = open("normalization_amplitude.pkl", "wb") #save value dictionary to pkl files
 pickle.dump(max_values, file)
 file.close()
+'''
