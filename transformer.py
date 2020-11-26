@@ -322,13 +322,13 @@ def run_epoch(data_iter, model, loss_compute):
     "Standard Training and Logging Function"
     start = time.time()
     total_tokens = 0
-    total_loss = 0
+    epoch_loss = 0
     tokens = 0
     for i, batch in enumerate(data_iter):
         out = model.forward(batch.src, batch.trg, 
                             batch.src_mask, batch.trg_mask)
         loss = loss_compute(out, batch.trg_y, batch.ntokens)
-        total_loss += loss
+        epoch_loss += loss
         total_tokens += batch.ntokens
         tokens += batch.ntokens
         if i % 50 == 1:
@@ -337,7 +337,7 @@ def run_epoch(data_iter, model, loss_compute):
                     (i, loss / batch.ntokens, tokens / elapsed))
             start = time.time()
             tokens = 0
-    return total_loss / total_tokens
+    return epoch_loss / total_tokens
 
 
 global max_src_in_batch, max_tgt_in_batch
@@ -424,7 +424,98 @@ class SimpleLossCompute:
         if self.opt is not None:
             self.opt.step()
             self.opt.optimizer.zero_grad()
-        return loss.data[0] * norm
+        # return loss.data[0] * norm
+        return loss.data * norm
 
 
 
+"""
+below code is taken in partially from 
+https://towardsdatascience.com/how-to-code-the-transformer-in-pytorch-24db27c8f9ec
+"""
+
+def train_epochs(X, Y, model, optim, save_path = "./checkpoints/Transformer", epoch_n = 10, load = False):
+    if load == True:
+        model.load_state_dict(torch.load(save_path))
+    else: # initialize the parameters
+        for p in model.parameters():
+            if p.dim() > 1:
+                torch.nn.init.xavier_uniform_(p)
+    model.train()
+    start = time.time()
+    temp = start
+    total_loss = 0
+    epoch_loss = 0
+    save_every = 100
+    _, N, _ = X.shape
+    for epoch in range(epoch_n):
+        samples = np.random.random_integers(0, N-1, size=(32))
+        X_sample = torch.from_numpy(X[:,samples, :]).float()
+        Y_sample = torch.from_numpy(Y[:,samples, :]).float()
+        Y_input = Y_sample
+        """
+        implement later:
+        # Y_input = torch.zeros(Y_sample.shape)
+        # Y_input[1:,:,:] = Y_sample[:-1,:,:]
+        """
+        optim.zero_grad()
+        # print(X_sample.shape)
+        # print(Y_input.shape)
+        pred = model(X_sample, Y_input)
+        MSE_Loss = torch.nn.MSELoss()
+        loss = MSE_Loss(pred, Y_sample)
+        loss.backward()
+        # print("Loss: ", loss.data)
+        optim.step()
+        total_loss += loss.data
+        # epoch_loss += loss
+        if epoch % save_every == 0:
+            torch.save(model.state_dict(), save_path)
+        #     loss_avg = epoch_loss / save_every
+        #     print(f"time = {(time.time() - start) // 60}m, epoch = {epoch + 1} loss = {loss_avg}")
+        #     epoch_loss = 0
+        #     temp = time.time()
+    # print("training pred: ", pred)
+    torch.save(model.state_dict(), save_path) # save in case last epoch % save_every != 0
+    return (total_loss / N)
+
+def evaluate_transformer(X, Y, model, optim, save_path = "./checkpoints/Transformer"):
+    X = torch.from_numpy(X).float()
+    Y = torch.from_numpy(Y).float()
+    T, N, E = Y.shape
+    model.eval()
+    model.load_state_dict(torch.load(save_path))
+    Y_input = torch.zeros((T + 1, N, E)) # first T dim is for initial input
+    # print("initial Y_input: ", Y_input)
+    # the actual prediction will be on index 1 onwards
+    for idx in range(1, Y_input.shape[0]):
+        trg_mask = np.triu(np.ones((idx, idx)), k=1).astype('uint8')
+        trg_mask= torch.from_numpy(trg_mask) == 0
+        # print(X[ idx-1,:,:].shape)
+        pred = model(X, Y_input[:idx,:,:]) #, tgt_mask = trg_mask
+        Y_input[idx,:,:] = pred[-1,:,:]
+    # print("Y_input: ", Y_input)
+    MSE_Loss = torch.nn.MSELoss()
+    loss = MSE_Loss(Y_input[1:,:,:], Y)
+    # print("eval loss.data: ", loss.data)
+    return loss.data / N
+
+
+def train_loop(X_train, X_test, Y_train, Y_test, model, save_path = "./checkpoints/Transformer", loop_n = 100):
+    training_avg_losses = []
+    evaluating_avg_losses = []
+    optim = torch.optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)
+    first_time = True
+    for _ in range(loop_n):
+        #training
+        # print("training")
+        if first_time:
+            training_avg_losses.append(train_epochs(X_train, Y_train, model, optim, save_path = save_path))
+            first_time = False
+        else:
+            training_avg_losses.append(train_epochs(X_train, Y_train, model, optim, load = True, save_path = save_path))
+        #evaluating
+        # print("evaluating")
+        evaluating_avg_losses.append(evaluate_transformer(X_test, Y_test, model, optim, save_path = save_path))
+    return (training_avg_losses, evaluating_avg_losses)
+    
