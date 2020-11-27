@@ -503,7 +503,7 @@ def evaluate_transformer(X, Y, model, optim, save_path = "./checkpoints/Transfor
     MSE_Loss = torch.nn.MSELoss()
     loss = MSE_Loss(Y_input[1:,:,:], Y)
     # print("eval loss.data: ", loss.data)
-    return loss.data / N
+    return (loss.data / N, Y_input[1:,:,:])
 
 
 def train_loop(X_train, X_test, Y_train, Y_test, model, save_path = "./checkpoints/Transformer", loop_n = 100):
@@ -521,6 +521,7 @@ def train_loop(X_train, X_test, Y_train, Y_test, model, save_path = "./checkpoin
             training_avg_losses.append(train_epochs(X_train, Y_train, model, optim, load = True, save_path = save_path))
         #evaluating
         print("evaluating")
-        evaluating_avg_losses.append(evaluate_transformer(X_test, Y_test, model, optim, save_path = save_path))
+        training_avg_loss, _ = evaluate_transformer(X_test, Y_test, model, optim, save_path = save_path)
+        evaluating_avg_losses.append(training_avg_loss)
     return (training_avg_losses, evaluating_avg_losses)
     

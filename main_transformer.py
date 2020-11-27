@@ -4,6 +4,7 @@ from transformer import train_loop
 # from transformer import *
 import torch
 from torch.nn import Transformer
+from transformer import evaluate_transformer
 import numpy as np
 import matplotlib.pyplot as plt
 """
@@ -73,12 +74,12 @@ print(Y_train.shape)
 # print(torch.cuda.get_device_name(0))
 N,S,E = X_train.shape
 X_train = X_train.reshape(S, N ,E)
-N,E,S = Y_train.shape
-Y_train = Y_train.reshape(S, N ,E)
+N,E,T = Y_train.shape
+Y_train = Y_train.reshape(T, N ,E)
 N,S,E = X_test.shape
 X_test = X_test.reshape(S, N ,E)
-N,E,S = Y_test.shape
-Y_test = Y_test.reshape(S, N ,E)
+N,E,T = Y_test.shape
+Y_test = Y_test.reshape(T, N ,E)
 print(X_train.shape)
 # print((X_train[0,0,0]))
 model = Transformer(d_model = 6, nhead = 6)
