@@ -479,15 +479,19 @@ def train_epochs(X, Y, model, optim, save_path = "./checkpoints/Transformer", ep
     torch.save(model.state_dict(), save_path) # save in case last epoch % save_every != 0
     return (total_loss / N)
 
-def evaluate_transformer(X, Y, model, optim, save_path = "./checkpoints/Transformer"):
+def evaluate_transformer(X, Y, model, optim, save_path = "./checkpoints/Transformer", batch_size = 200):
     # X = torch.from_numpy(X).float()
     # Y = torch.from_numpy(Y).float()
     T, N, E = Y.shape
     
-    samples = np.random.random_integers(0, N-1, size=(200))
-    X = torch.from_numpy(X[:,samples, :]).float()
-    Y = torch.from_numpy(Y[:,samples, :]).float() 
-    T, N, E = Y.shape 
+    if batch_size == None: # don't do random sampling
+        X = torch.from_numpy(X).float()
+        Y = torch.from_numpy(Y).float()
+    else:
+        samples = np.random.random_integers(0, N-1, size=(batch_size))
+        X = torch.from_numpy(X[:,samples, :]).float()
+        Y = torch.from_numpy(Y[:,samples, :]).float() 
+        T, N, E = Y.shape 
     model.load_state_dict(torch.load(save_path))
     model.eval()
     Y_input = torch.zeros((T + 1, N, E)) # first T dim is for initial input
