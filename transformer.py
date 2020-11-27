@@ -434,7 +434,7 @@ below code is taken in partially from
 https://towardsdatascience.com/how-to-code-the-transformer-in-pytorch-24db27c8f9ec
 """
 
-def train_epochs(X, Y, model, optim, save_path = "./checkpoints/Transformer", epoch_n = 10, load = False):
+def train_epochs(X, Y, model, optim, save_path = "./checkpoints/Transformer", epoch_n = 100, load = False):
     if load == True:
         model.load_state_dict(torch.load(save_path))
     else: # initialize the parameters
@@ -480,11 +480,16 @@ def train_epochs(X, Y, model, optim, save_path = "./checkpoints/Transformer", ep
     return (total_loss / N)
 
 def evaluate_transformer(X, Y, model, optim, save_path = "./checkpoints/Transformer"):
-    X = torch.from_numpy(X).float()
-    Y = torch.from_numpy(Y).float()
+    # X = torch.from_numpy(X).float()
+    # Y = torch.from_numpy(Y).float()
     T, N, E = Y.shape
-    model.eval()
+    
+    samples = np.random.random_integers(0, N-1, size=(200))
+    X = torch.from_numpy(X[:,samples, :]).float()
+    Y = torch.from_numpy(Y[:,samples, :]).float() 
+    T, N, E = Y.shape 
     model.load_state_dict(torch.load(save_path))
+    model.eval()
     Y_input = torch.zeros((T + 1, N, E)) # first T dim is for initial input
     # print("initial Y_input: ", Y_input)
     # the actual prediction will be on index 1 onwards
@@ -508,14 +513,14 @@ def train_loop(X_train, X_test, Y_train, Y_test, model, save_path = "./checkpoin
     first_time = True
     for _ in range(loop_n):
         #training
-        # print("training")
+        print("training")
         if first_time:
             training_avg_losses.append(train_epochs(X_train, Y_train, model, optim, save_path = save_path))
             first_time = False
         else:
             training_avg_losses.append(train_epochs(X_train, Y_train, model, optim, load = True, save_path = save_path))
         #evaluating
-        # print("evaluating")
+        print("evaluating")
         evaluating_avg_losses.append(evaluate_transformer(X_test, Y_test, model, optim, save_path = save_path))
     return (training_avg_losses, evaluating_avg_losses)
     

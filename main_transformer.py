@@ -83,7 +83,7 @@ print(X_train.shape)
 # print((X_train[0,0,0]))
 model = Transformer(d_model = 6, nhead = 6)
 
-training_avg_losses, evaluating_avg_losses = train_loop(X_train[:,:1000,:], X_test[:,:1000,:], Y_train[:,:1000,:], Y_test[:,:1000,:], model, loop_n = 5)
+training_avg_losses, evaluating_avg_losses = train_loop(X_train, X_test, Y_train, Y_test, model, loop_n = 25)
 print("training_avg_losses: ", training_avg_losses)
 print("evaluating_avg_losses: ", evaluating_avg_losses)
 #plot
