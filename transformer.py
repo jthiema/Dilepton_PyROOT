@@ -533,12 +533,12 @@ def process_dataX(data):
    N, S, E = data.shape
    new_data = np.zeros((S, N, E))
    for idx in range(N):
-       new_data[:, i, :] = data[i, :, :]
+       new_data[:, idx, :] = data[idx, :, :]
    return new_data
 
 def process_dataY(data):
    N, E, T = data.shape
    new_data = np.zeros((T, N, E))
    for idx in range(N):
-       new_data[:, i, :] = data[i, :, :].T
+       new_data[:, idx, :] = data[idx, :, :].T
    return new_data
