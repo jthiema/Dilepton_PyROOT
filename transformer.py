@@ -528,4 +528,17 @@ def train_loop(X_train, X_test, Y_train, Y_test, model, save_path = "./checkpoin
         training_avg_loss, _ = evaluate_transformer(X_test, Y_test, model, optim, save_path = save_path)
         evaluating_avg_losses.append(training_avg_loss)
     return (training_avg_losses, evaluating_avg_losses)
-    
+
+def process_dataX(data):
+   N, S, E = data.shape
+   new_data = np.zeros((S, N, E))
+   for idx in range(N):
+       new_data[:, i, :] = data[i, :, :]
+   return new_data
+
+def process_dataY(data):
+   N, E, T = data.shape
+   new_data = np.zeros((T, N, E))
+   for idx in range(N):
+       new_data[:, i, :] = data[i, :, :].T
+   return new_data
