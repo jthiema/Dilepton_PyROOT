@@ -2,7 +2,7 @@ import time
 import numpy as np
 
 import matplotlib.pyplot as plt
-from transformer import evaluate_transformer
+from transformer import evaluate_transformer, process_dataX, process_dataY
 import torch
 from torch.nn import Transformer
 """
