@@ -14,12 +14,16 @@ Y_test = np.load("Y_test_normalized.npy")
 X_train = np.load("X_train_normalized.npy")
 Y_train = np.load("Y_train_normalized.npy")
 
-X_test = process_dataX(X_test)
-Y_test = process_dataY(Y_test)
 
 # limit the test sizes as otherwise the memory take is too much
 X_test = X_test[:1000,:,:]
 Y_test = Y_test[:1000,:,:]
+
+X_test = process_dataX(X_test)
+Y_test = process_dataY(Y_test) 
+
+T, N, E = Y_test.shape
+
 # reshape for transformer
 # N,S,E = X_test.shape
 # X_test = X_test.reshape(S, N ,E)
@@ -49,8 +53,8 @@ for t in range(T):
         plt.hist(Yhat[t,:,e], bins, alpha=0.5, label =" Yhat", figure = fig)
         # plt.hist(Yhat[:,e,t], bins, alpha=0.5, label = "Yhat", figure = fig)
         plt.legend(loc='upper right')
-        plt.title(f'TransformerTest_plot_on{i}and{j}', figure = fig)
-        fig.savefig(f'TransformerTest_plot_on{i}and{j}')
+        plt.title(f'TransformerTest_plot_on{e}and{t}', figure = fig)
+        fig.savefig(f'TransformerTest_plot_on{e}and{t}')
         fig.clf()
         print("done one")
 
