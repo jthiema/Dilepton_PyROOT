@@ -509,13 +509,12 @@ def evaluate_transformer(X, Y, model, optim, save_path = "./checkpoints/Transfor
     return (loss.data / N, Y_input[1:,:,:])
 
 
-def train_loop(X_train, X_test, Y_train, Y_test, model, save_path = "./checkpoints/Transformer", loop_n = 100):
+def train_loop(X_train, X_test, Y_train, Y_test, model, save_path = "./checkpoints/Transformer", loop_n = 100, first_time = True):
     training_avg_losses = []
     evaluating_avg_losses = []
     # optim = torch.optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)
     optim = torch.optim.Adam(model.parameters(), lr=0.001, momentum=0.9)
     # optim = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    first_time = True
     for _ in range(loop_n):
         #training
         print("training")
