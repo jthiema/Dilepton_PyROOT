@@ -16,8 +16,8 @@ Y_train = np.load("Y_train_normalized.npy")
 
 
 # limit the test sizes as otherwise the memory take is too much
-X_test = X_test[:1000,:,:]
-Y_test = Y_test[:1000,:,:]
+#X_test = X_test[:1000,:,:]
+#Y_test = Y_test[:1000,:,:]
 
 X_test = process_dataX(X_test)
 Y_test = process_dataY(Y_test) 
@@ -30,6 +30,12 @@ T, N, E = Y_test.shape
 # N,E,T = Y_test.shape
 # #Y_test = Y_test.reshape(T, N ,E)
 # Y_test_input = np.zeros((T, N ,E))
+
+batches = []
+i = 0
+while():
+
+
 Y_test_input = np.zeros(Y_test.shape)
 print("X_test shape: ", X_test.shape)
 print("Y_test shape: ", Y_test.shape)
