@@ -437,7 +437,7 @@ https://towardsdatascience.com/how-to-code-the-transformer-in-pytorch-24db27c8f9
 def train_epochs(X, Y, model, optim, save_path = "./checkpoints/Transformer", epoch_n = 100, load = False):
     if load == True:
         model.load_state_dict(torch.load(save_path))
-    else: # initialize the parameters
+    else: # new model, so initialize the parameters 
         for p in model.parameters():
             if p.dim() > 1:
                 torch.nn.init.xavier_uniform_(p)
