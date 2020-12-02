@@ -32,20 +32,32 @@ T, N, E = Y_test.shape
 # Y_test_input = np.zeros((T, N ,E))
 
 batches = []
-i = 0
-while():
-
+start = 0
+while(start < N):
+    end = start + 1000
+    if end > N:
+        end = N
+    batches.append(X_test[:, start: end,:])
+    start = end
 
 Y_test_input = np.zeros(Y_test.shape)
 print("X_test shape: ", X_test.shape)
 print("Y_test shape: ", Y_test.shape)
 
 save_path = "./checkpoints/Transformer"
-
 model = Transformer(d_model = 6, nhead = 6)
 optim = torch.optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)
-_, Yhat = evaluate_transformer(X_test, Y_test_input, model, optim, save_path = save_path, batch_size = None)
-Yhat = Yhat.detach().numpy()
+
+Yhat = np.zeros((T, N, E ))
+start = 0
+for X_batch in batches:
+    _, N_batch, _ = X_batch.shape
+    end = start + N_batch
+    Y_shape = np.zeros((T, N_batch, E))
+    _, Yhat_batch = evaluate_transformer(X_batch, Y_shape, model, optim, save_path = save_path, batch_size = None)
+    Yhat_batch = Yhat_batch.detach().numpy()
+    Yhat[:, start:end, :] = Yhat_batch
+    start = end
 # Yhat = Yhat.detach().numpy().reshape(N, E, T)
 print("Yhat shape: ", Yhat.shape)
 fig = plt.figure()
