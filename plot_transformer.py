@@ -37,7 +37,7 @@ while(start < N):
     end = start + 1000
     if end > N:
         end = N
-    batches.append(X_test[:, start: end,:])
+    batches.append((X_test[:, start: end,:], Y_test[:, start: end,:]))
     start = end
 
 Y_test_input = np.zeros(Y_test.shape)
@@ -50,11 +50,10 @@ optim = torch.optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1
 
 Yhat = np.zeros((T, N, E ))
 start = 0
-for X_batch in batches:
+for X_batch, Y_batch in batches:
     _, N_batch, _ = X_batch.shape
     end = start + N_batch
-    Y_shape = np.zeros((T, N_batch, E))
-    _, Yhat_batch = evaluate_transformer(X_batch, Y_shape, model, optim, save_path = save_path, batch_size = None)
+    _, Yhat_batch = evaluate_transformer(X_batch, Y_batch, model, optim, save_path = save_path, batch_size = None)
     Yhat_batch = Yhat_batch.detach().numpy()
     Yhat[:, start:end, :] = Yhat_batch
     start = end
