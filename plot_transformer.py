@@ -42,8 +42,8 @@ def make_plots(X, Y, model, title, save_path = "./checkpoints/Transformer"):
     for t in range(T):
         for e in range(E):
             #plt.legend(['Yhat'])
-            plt.hist(Y_test[t,:,e], bins, alpha=0.5, label = "Y", figure = fig)
-            # plt.hist(Y_test[:,e,t], bins, alpha=0.5, label = "Y", figure = fig)
+            plt.hist(Y[t,:,e], bins, alpha=0.5, label = "Y", figure = fig)
+            # plt.hist(Y[:,e,t], bins, alpha=0.5, label = "Y", figure = fig)
             #plt.legend(['Y test'])
             plt.hist(Yhat[t,:,e], bins, alpha=0.5, label =" Yhat", figure = fig)
             # plt.hist(Yhat[:,e,t], bins, alpha=0.5, label = "Yhat", figure = fig)
