@@ -46,8 +46,8 @@ print("Y_test shape: ", Y_test.shape)
 
 save_path = "./checkpoints/Transformer"
 model = Transformer(d_model = 6, nhead = 6)
-optim = torch.optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)
-
+optim = torch.optim.Adam(model.parameters(), lr=0.001, momentum=0.9)
+# optim = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 Yhat = np.zeros((T, N, E ))
 start = 0
 for X_batch, Y_batch in batches:
